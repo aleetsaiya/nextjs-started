@@ -1,34 +1,81 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next.js
+Next.js getting started 筆記
+## 目錄
 
-## Getting Started
+1. [Pages](#pages)
+   + Dynamic Routes
+   + Link
+2. Pre-render
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
+## Pages
+在 `pages` folder 裡面的 React Component，會根據檔案名稱對應到 route，像是:
+
+```jsx
+// (網址) → 檔案位置 
+/ → pages/index.js
+/about → pages/about.js
+/blog/hello-world → pages/blog/[slug].js
+```
+(被中括號括住的檔名可以使用 dynamic routes，底下介紹)
+
+### Dynamic Routes
+可以將檔案/資料夾名稱設定成像是 `[pid]` 這種用中括號包起來的檔案名稱，它會自動對應網址參數名稱
+```js
+// 在 post資料夾裡面的 [pid]資料夾裡面的 [comment].js
+// post/[pid]/[comment].js
+import { useRouter } from "next/router";
+
+const Post = () => {
+  const router = useRouter();
+  // 從網址參數中提取 pid 以及 comment   
+  // 如果網址是 "/post/1/hello"，則 pid 為 1，comment 為 hello 
+  const { pid, comment } = router.query;
+  
+  return (
+    <p>
+      Pid: {pid} Comment: {comment}
+    </p>
+  );
+};
+
+export default Post;
+
+```
+### Link
+使用 `<Link/>` 來相連不同的 pages，像是底下建立一個 Home Pages 來連接各個其他的 pages
+
+```js
+import Link from 'next/link'
+
+function Home() {
+  return (
+    <ul>
+      <li>
+        {/* pages/index.js */}
+        <Link href="/">
+          <a>Home</a>
+        </Link>
+      </li>
+      <li>
+        <Link href="/about">
+          <a>About Us</a>
+        </Link>
+      </li>
+      <li>
+        <Link href="/blog/hello-world">
+          <a>Blog Post</a>
+        </Link>
+      </li>
+    </ul>
+  )
+}
+
+export default Home
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Pre-render
+pre-render 所有的 pages，又可分為 `static generation` 以及 `server-side rendering`，為了更好的效能，官方推薦使用 static generation。
+詳細: [link](https://nextjs.org/docs/basic-features/pages#pre-rendering)
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+continue : [link](https://nextjs.org/docs/basic-features/pages#static-generation-recommended)
